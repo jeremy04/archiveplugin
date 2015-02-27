@@ -58,29 +58,16 @@ else {
 
     var myBox = $('#col1').find('.box:first-child');
     myBox.append('<h2>Songs</h2>');
+
     var myContent = $('<p class="content"/>');
 
-    var list = $('#midcol').find('script').html().trim();
-    var start = list.indexOf(',') +1; 
-    var end = list.indexOf('{"start"'); 
-    var finalList = list.substring(start, end).trim(); 
-    finalList = finalList.substring(0, finalList.length-1) + ';'; 
-    finalList = "var myList = "+finalList;
-    eval(finalList);
+    var list = $('#midcol').find('script').html();
+    var myList = list.match(/\{\"title\"(.*?\}\]\})/g);  
 
-    var urls = []
-
-    for (var i = 0; i < myList.length; i++) {  
-        //console.log(myList[i].title + " -- " + myList[i].sources[0].file); 
- 	 
-        urls[i] = myList[i].sources[0].file;
- 	 
-        var str1 = "http://www.archive.org";
- 	  
-        var newUrl = str1.concat(urls[i]);
- 	 
-        //console.log(newUrl);
-        myContent.append("<a href=\"" + newUrl + "\" class=\"downloadfile\" download>" + myList[i].title + "</a>");
+    for (var i = 0; i < myList.length; i++) {
+        var song = JSON.parse(myList[i])
+        var newUrl = "http://www.archive.org".concat(song.sources[0].file);
+ 	    myContent.append("<a href=\"" + newUrl + "\" class=\"downloadfile\" download>" + song.title + "</a>");
         myContent.append("<br/>");
     }
 
