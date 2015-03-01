@@ -1,3 +1,53 @@
+
+  function deferredAddZip(url, filename, zip) {
+    var deferred = $.Deferred();
+    JSZipUtils.getBinaryContent(url, function (err, data) {
+        if(err) {
+            deferred.reject(err);
+            console.log(err);
+        } else {
+            zip.file(filename, data, {binary:true});
+            deferred.resolve(data);
+        }
+    });
+    return deferred;
+  }
+
+  function download_all(urls) 
+  {
+    var zip = new JSZip();
+    var deferreds = [];
+
+    $.each(urls, function(k,v) {
+      var song = JSON.parse(v)
+      var url = song.sources[0].file;
+      var full_url = "https://archive.org" + url;
+     
+      // 64kbps support not working yet...
+      // if ($(".content:contains('64kbps')").size() > 0) {
+      //  full_url = full_url.replace(".mp3","_64kb.mp3");
+      // }
+     
+      var title = url.substring(url.lastIndexOf('/')+1);
+      deferreds.push(deferredAddZip(full_url, title, zip));
+    });
+    
+    $.when.apply($, deferreds).done(function () {
+      var blob = zip.generate({type:"blob"});
+      $("#downloadAll").prop("disabled",false);
+      $("#progress").text("Compressing: Finished");
+      var url = window.location.pathname;
+      var show = url.substring(url.lastIndexOf('/')+1);
+      saveAs(blob, show + ".zip");
+
+    }).fail(function (err) {
+      console.log("Ahh craig:" + err);
+    });
+
+ }
+
+
+
 if ($('#wrap').length) {
 
     
@@ -76,9 +126,11 @@ else {
     
     
     $('#downloadAll').click(function(){
-        for (i = 0; i < myList.length; i++) {
-        $('.downloadfile')[i].click();
-        };
+        $("#downloadAll").prop("disabled",true);
+        if ($("#progress").length == 0) {
+            $("<div id='progress'></div>").insertAfter("#downloadAll");
+        }
+        download_all(myList);
     });
     
    

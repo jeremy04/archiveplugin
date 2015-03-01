@@ -25,7 +25,11 @@
         "https://archive.org/*"
       ],
       "js": [
-        "js/jquery/jquery.js", "script.js"
+        "js/jquery/jquery.js",
+        "js/jszip/jszip.js", 
+        "js/jszip-utils/jszip-utils.js",
+        "js/filesaver/FileSaver.min.js",
+        "script.js"
       ]
     }
   ]
