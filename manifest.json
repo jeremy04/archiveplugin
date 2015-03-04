@@ -26,6 +26,7 @@
       ],
       "js": [
         "js/jquery/jquery.js",
+        "js/underscore-min.js",
         "js/jszip/jszip.js", 
         "js/jszip-utils/jszip-utils.js",
         "js/filesaver/FileSaver.min.js",
